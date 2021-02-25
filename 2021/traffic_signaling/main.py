@@ -1,5 +1,5 @@
-from sys import path
-
+from os import path
+from glob import glob
 
 datasets_folder = './datasets'
 output_folder = './output'
@@ -48,13 +48,31 @@ def score():
     pass
 
 def solve(dataset):
+    num_intersections = dataset['num_intersections']
+    intersections = []
+    incoming_streets = [[] for _ in xrange(num_intersections)]
+
+    for B, E, street_name, travel_time in dataset['streets']:
+        incoming_streets[E].append(street_name)
+    for inter_id, streets in enumerate(incoming_streets):
+        intersection = []
+        street_durations = []
+        intersection.append(inter_id)
+        intersection.append(len(streets))
+        for street_name in streets:
+            # navie solution: 1 second for each incoming street
+            street_durations.append([street_name, 1])
+        intersection.append(street_durations)
+        intersections.append(intersection)
     result = {
-        'num_intersections': 0,
-        'intersections': []
+        'num_intersections': num_intersections,
+        'intersections': intersections
     }
     return result
 
 if __name__ == '__main__':
-    dataset = read(path.join(datasets_folder, 'sampleA.txt'))
-    res = solve(dataset)
-    write(path.join(output_folder, 'sampleA.out'), res)
+    for filename in glob(path.join(datasets_folder, '*')):
+        dataset = read(filename)
+        res = solve(dataset)
+        output_filename = path.join(output_folder, path.basename(filename))
+        write(output_filename, res)
