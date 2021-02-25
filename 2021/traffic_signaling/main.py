@@ -4,6 +4,7 @@ from sys import path
 datasets_folder = './datasets'
 output_folder = './output'
 
+
 def read(filename):
     with open(filename) as f:
         D, I, S, V, F = map(int, f.readline().split())
@@ -28,7 +29,7 @@ def read(filename):
         'streets': streets,
         'cars': cars
     }
-    
+
     return data
 
 
@@ -44,8 +45,10 @@ def write(filename, result):
             for street, duration in intersection[2]:
                 f.write('{} {}\n'.format(street, duration))
 
+
 def score():
     pass
+
 
 def solve(dataset):
     result = {
@@ -53,6 +56,7 @@ def solve(dataset):
         'intersections': []
     }
     return result
+
 
 if __name__ == '__main__':
     dataset = read(path.join(datasets_folder, 'sampleA.txt'))
