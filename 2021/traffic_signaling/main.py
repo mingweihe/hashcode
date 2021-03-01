@@ -1,5 +1,6 @@
 from os import path
 from glob import glob
+from collections import defaultdict
 
 datasets_folder = './datasets'
 output_folder = './output'
@@ -47,23 +48,40 @@ def write(filename, result):
 def score():
     pass
 
+def move_one_step():
+    pass
+
 def solve(dataset):
     num_intersections = dataset['num_intersections']
     intersections = []
+    ## navie solution: 1 second for each incoming street
+    # incoming_streets = [[] for _ in xrange(num_intersections)]
+    # for B, E, street_name, travel_time in dataset['streets']:
+    #     incoming_streets[E].append(street_name)
+    # for inter_id, streets in enumerate(incoming_streets):
+    #     intersection = []
+    #     street_durations = []
+    #     intersection.append(inter_id)
+    #     intersection.append(len(streets))
+    #     for street_name in streets:
+    #         street_durations.append([street_name, 1])
+    #     intersection.append(street_durations)
+    #     intersections.append(intersection)
+
+    ## solution2: optimize by traffic peak
+    inter_incoming_street_peak = defaultdict(int)
+    local_incoming_street_peak = defaultdict(int)
+    cars_status = [['', 0] for _ in xrange(dataset['num_cars'])] # current street, position in the street
+    cars_next_street = [[-1, -1] for _ in xrange(dataset['num_cars'])]
     incoming_streets = [[] for _ in xrange(num_intersections)]
 
     for B, E, street_name, travel_time in dataset['streets']:
         incoming_streets[E].append(street_name)
-    for inter_id, streets in enumerate(incoming_streets):
-        intersection = []
-        street_durations = []
-        intersection.append(inter_id)
-        intersection.append(len(streets))
-        for street_name in streets:
-            # navie solution: 1 second for each incoming street
-            street_durations.append([street_name, 1])
-        intersection.append(street_durations)
-        intersections.append(intersection)
+        
+    for i in xrange(dataset['duration']):
+        for car_id in xrange(dataset['num_cars'])):
+            move_one_step(car_id, inter_in_street_peak, cars_status, cars_next_street)
+
     result = {
         'num_intersections': num_intersections,
         'intersections': intersections
