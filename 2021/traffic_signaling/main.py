@@ -5,6 +5,7 @@ from collections import defaultdict
 datasets_folder = './datasets'
 output_folder = './output'
 
+
 def read(filename):
     with open(filename) as f:
         D, I, S, V, F = map(int, f.readline().split())
@@ -29,7 +30,7 @@ def read(filename):
         'streets': streets,
         'cars': cars
     }
-    
+
     return data
 
 
@@ -45,10 +46,11 @@ def write(filename, result):
             for street, duration in intersection[2]:
                 f.write('{} {}\n'.format(street, duration))
 
+
 def score():
     pass
 
-def move_one_step():
+def move_one_step(car_id, incoming_street_peak, local_isp, cars_status, cars_next_street):
     pass
 
 def solve(dataset):
@@ -69,8 +71,8 @@ def solve(dataset):
     #     intersections.append(intersection)
 
     ## solution2: optimize by traffic peak
-    inter_incoming_street_peak = defaultdict(int)
-    local_incoming_street_peak = defaultdict(int)
+    incoming_street_peak = defaultdict(int)
+    local_isp = defaultdict(int)
     cars_status = [['', 0] for _ in xrange(dataset['num_cars'])] # current street, position in the street
     cars_next_street = [[-1, -1] for _ in xrange(dataset['num_cars'])]
     incoming_streets = [[] for _ in xrange(num_intersections)]
@@ -79,14 +81,15 @@ def solve(dataset):
         incoming_streets[E].append(street_name)
         
     for i in xrange(dataset['duration']):
-        for car_id in xrange(dataset['num_cars'])):
-            move_one_step(car_id, inter_in_street_peak, cars_status, cars_next_street)
+        for car_id in xrange(dataset['num_cars']):
+            move_one_step(car_id, incoming_street_peak, local_isp, cars_status, cars_next_street)
 
     result = {
         'num_intersections': num_intersections,
         'intersections': intersections
     }
     return result
+
 
 if __name__ == '__main__':
     for filename in glob(path.join(datasets_folder, '*')):
